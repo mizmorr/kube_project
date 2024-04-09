@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: listener
+  labels:
+    app: listener
+    service: listener
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: listener
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proj-listener
+  labels:
+    account: listener
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: listener-v1
+  labels:
+    app: listener
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: listener
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: listener
+        version: v1
+    spec:
+      serviceAccountName: proj-listener
+      containers:
+      - name: listener
+        image: docker.io/mizmorr/hello
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+---

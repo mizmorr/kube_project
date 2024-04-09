@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: listener
+spec:
+  containers:
+  - image: mizmorr/listener
+    name: listener
+    ports:
+    - containerPort: 8080
+      protocol: TCP
