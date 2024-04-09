@@ -1,0 +1,51 @@
+<!-- <html>
+    <head>
+        <title>jquery</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+            
+          <script>
+        $(document).submit(function (event) {
+            var weight=$("#name");
+            alert("Weight: " + weight);
+    
+      
+    });
+          </script>
+          <script type ="text/javascript" src="script.js"></script>
+    </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>jquery</title>
+  </head>
+  <body>
+    <form>
+        <input type="range" min="120" max="220" value="170" class="slider" id="myRange" name="slide">
+        <input type="text" id="value" style="border:0; margin-top:10px;">
+        <input type="submit" value="Идеальный вес" />
+    </form>
+    <script>
+      $(document).ready(function () {
+        $("form").submit(function (event) {
+          var weight = $("#myRange").val();
+          var ideal=(weight-100)*1.15;
+          alert("Ваш идеальный вес - "+ideal);z
+        });
+      });
+    </script>
+    <script type ="text/javascript" src="script.js"></script>
+
+  </body>
+</html>
+
+
