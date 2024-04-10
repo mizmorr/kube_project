@@ -33,7 +33,7 @@ metadata:
   uid: 8dc2cffc-082b-493e-b1b2-6f4659be139e
 spec:
   containers:
-  - image: docker.io/mizmorr/listen
+  - image: docker.io/istio/examples-helloworld-v1
     imagePullPolicy: IfNotPresent
     name: productpage
     ports:

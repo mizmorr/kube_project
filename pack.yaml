@@ -41,7 +41,7 @@ spec:
       serviceAccountName: proj-listener
       containers:
       - name: listener
-        image: docker.io/mizmorr/hello
+        image: docker.io/mizmorr/hi
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
