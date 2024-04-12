@@ -7,7 +7,7 @@ metadata:
     service: listener
 spec:
   ports:
-  - port: 9080
+  - port: 8080
     name: http
   selector:
     app: listener
@@ -41,8 +41,8 @@ spec:
       serviceAccountName: proj-listener
       containers:
       - name: listener
-        image: docker.io/mizmorr/hi
+        image: docker.io/mizmorr/hello_v2
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 9080
+        - containerPort: 8080
 ---

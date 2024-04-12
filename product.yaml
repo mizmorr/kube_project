@@ -39,9 +39,9 @@ spec:
         version: v1
     spec:
       containers:
-      - image: docker.io/istio/examples-bookinfo-productpage-v1:1.18.0
+      - image: docker.io/mizmorr/hello_v2
         imagePullPolicy: IfNotPresent
-        name: productpage
+        name: hellov2
         ports:
         - containerPort: 9080
           protocol: TCP
