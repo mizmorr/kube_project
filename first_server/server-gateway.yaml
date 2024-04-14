@@ -27,13 +27,11 @@ spec:
   http:
   - match:
     - uri:
-        exact: /hello
-    - uri:
-        prefix: /static
+        exact: /
     - uri:
         exact: /about
     - uri:
-        exact: /
+        exact: /server
     route:
     - destination:
         host: server
