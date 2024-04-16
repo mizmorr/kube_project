@@ -27,13 +27,13 @@ spec:
   http:
   - match:
     - uri:
-        exact: /
+        exact: /index
     - uri:
         exact: /about
     - uri:
-        exact: /server
+        exact: /second
     route:
     - destination:
         host: server
         port:
-          number: 8080
+          number: 9080

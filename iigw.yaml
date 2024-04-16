@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2024-04-14T22:41:49Z"
+  labels:
+    app: istio-ingressgateway2
+    install.operator.istio.io/owning-resource: installed-state
+    install.operator.istio.io/owning-resource-namespace: default
+    istio: myingressgateway
+    istio.io/rev: default
+    operator.istio.io/component: IngressGateways
+    operator.istio.io/managed: Reconcile
+    operator.istio.io/version: 1.21.1
+    release: istio
+  name: istio-ingressgateway2
+  namespace: default
+  resourceVersion: "1036462"
+  uid: ad5d4349-4db7-4d95-9768-d2a87cbc1dd1
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.97.162.138
+  clusterIPs:
+  - 10.97.162.138
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: status-port
+    nodePort: 31181
+    port: 15021
+    protocol: TCP
+    targetPort: 15021
+  - name: http2
+    nodePort: 32118
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  - name: https
+    nodePort: 32602
+    port: 443
+    protocol: TCP
+    targetPort: 8443
+  - name: tcp
+    nodePort: 30500
+    port: 31400
+    protocol: TCP
+    targetPort: 31400
+  - name: tls
+    nodePort: 32673
+    port: 15443
+    protocol: TCP
+    targetPort: 15443
+  selector:
+    app: istio-ingressgateway2
+    istio: myingressgateway
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}

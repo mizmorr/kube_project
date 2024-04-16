@@ -23,7 +23,7 @@ spec:
   hosts:
   - "*"
   gateways:
-  - listen-gateway
+  - listen-gateway2
   http:
   - match:
     - uri:

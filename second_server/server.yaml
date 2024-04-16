@@ -45,8 +45,7 @@ spec:
       serviceAccountName: listen-server2
       containers:
       - name: server2
-        image: docker.io/mizmorr/server:v2
-        imagePullPolicy: IfNotPresent
+        image: docker.io/mizmorr/server:v3
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -55,4 +54,5 @@ spec:
       volumes:
       - name: tmp
         emptyDir: {}
+
 ---

@@ -22,14 +22,14 @@ func main() {
 
 	})
 	http.HandleFunc("/index", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Index Page")
+		fmt.Fprint(w, "Index Page of main server")
 		logRequest(r)
 	})
 	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "metrics is good")
 		logRequest(r)
 	})
-	http.HandleFunc("/server", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/second", func(w http.ResponseWriter, r *http.Request) {
 		port := os.Getenv("SERVER2_SERVICE_PORT")
 		host := os.Getenv("SERVER2_SERVICE_HOST")
 		resp, err := http.Get("http://" + host + ":" + port + "/graph")
@@ -49,6 +49,7 @@ func main() {
 		logRequest(r)
 
 	})
-	fmt.Println("Server is listening...")
-	http.ListenAndServe(":8080", nil)
+	listen_port := os.Getenv("SERVER_SERVICE_PORT")
+	fmt.Println("Server is listening port...", listen_port)
+	http.ListenAndServe(":"+listen_port, nil)
 }

@@ -13,9 +13,6 @@ func main() {
 	http.HandleFunc("/about", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "server second")
 	})
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Index Page")
-	})
 	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "metrics is good")
 	})

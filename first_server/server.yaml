@@ -7,7 +7,7 @@ metadata:
     service: server
 spec:
   ports:
-  - port: 8080
+  - port: 9080
     name: http
   selector:
     app: server
@@ -36,7 +36,7 @@ spec:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "8080"
+        prometheus.io/port: "9080"
         prometheus.io/path: "/metrics"
       labels:
         app: server
@@ -46,9 +46,9 @@ spec:
       containers:
       - name: server
         image: docker.io/mizmorr/server:main
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 9080
         volumeMounts:
         - name: tmp
           mountPath: /tmp
