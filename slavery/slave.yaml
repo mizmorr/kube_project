@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: slave1
+  labels:
+    app: slave
+    service: slave1
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: slave
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-slave
+  labels:
+    account: slave
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slave1
+  labels:
+    app: slave
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slave
+      version: v1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9080"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: slave
+        version: v1
+    spec:
+      containers:
+      - name: slave
+        image: docker.io/mizmorr/server:v5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9080
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+---
