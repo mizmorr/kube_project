@@ -15,6 +15,23 @@ func logRequest(req *http.Request) {
 	header := req.Header
 	fmt.Println(uri, "\n", method, "\n", header, "\n---")
 }
+func make_slave_request(slave_num, port string, client *http.Client, w http.ResponseWriter) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://slave%s:%s/hi", slave_num, port), nil)
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
+	defer resp.Body.Close()
+	bodyText, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Fprintf(w, "%s\n", bodyText)
+
+}
 func main() {
 	http.HandleFunc("/hi_to_slave/", func(w http.ResponseWriter, r *http.Request) {
 		uri := strings.SplitAfter(r.URL.Path, "/hi_to_slave/")
@@ -44,6 +61,18 @@ func main() {
 
 	})
 	http.HandleFunc("/hi_every1", func(w http.ResponseWriter, r *http.Request) {
+		slave_num := 1
+		for (os.Getenv(fmt.Sprintf("SLAVE%d_SERVICE_PORT", slave_num))) != "" {
+			slave_num++
+		}
+		client := &http.Client{}
+
+		for i := 0; i < slave_num; i++ {
+
+			port := os.Getenv(fmt.Sprintf("SLAVE%s_SERVICE_PORT", fmt.Sprint((i))))
+			make_slave_request(fmt.Sprint(i), port, client, w)
+		}
+		fmt.Println("hello request done")
 
 	})
 	http.HandleFunc("/about", func(w http.ResponseWriter, r *http.Request) {
