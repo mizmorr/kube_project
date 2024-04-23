@@ -31,7 +31,9 @@ spec:
     - uri:
         exact: /about
     - uri:
-        exact: /second
+        exact: /hi_to_slave/
+    - uri:
+        exact: /hi_every1
     route:
     - destination:
         host: server

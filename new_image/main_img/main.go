@@ -41,20 +41,8 @@ func main() {
 			fmt.Fprint(w, "no such slave")
 		} else {
 			client := &http.Client{}
-			req, err := http.NewRequest("GET", fmt.Sprintf("http://slave%s:%s/hi", slavery_num, port), nil)
-			if err != nil {
-				fmt.Fprintln(w, err)
-			}
-			resp, err := client.Do(req)
-			if err != nil {
-				fmt.Fprintln(w, err)
-			}
-			defer resp.Body.Close()
-			bodyText, err := io.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Fprintf(w, "%s\n", bodyText)
+
+			make_slave_request(slavery_num, port, client, w)
 
 			fmt.Println("slave request")
 		}
@@ -67,10 +55,12 @@ func main() {
 		}
 		client := &http.Client{}
 
-		for i := 0; i < slave_num; i++ {
+		for i := 1; i < slave_num; i++ {
 
 			port := os.Getenv(fmt.Sprintf("SLAVE%s_SERVICE_PORT", fmt.Sprint((i))))
 			make_slave_request(fmt.Sprint(i), port, client, w)
+			fmt.Printf("curl to slave%d\n", i)
+
 		}
 		fmt.Println("hello request done")
 

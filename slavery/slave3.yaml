@@ -3,34 +3,34 @@ kind: Service
 metadata:
   name: slave3
   labels:
-    app: slave
+    app: slave3
     service: slave3
 spec:
   ports:
   - port: 9080
     name: http
   selector:
-    app: slave
+    app: slave3
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: sa-slave
+  name: sa-slave3
   labels:
-    account: slave
+    account: slave3
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: slave3
   labels:
-    app: slave
+    app: slave3
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: slave
+      app: slave3
       version: v1
   template:
     metadata:
@@ -39,11 +39,11 @@ spec:
         prometheus.io/port: "9080"
         prometheus.io/path: "/metrics"
       labels:
-        app: slave
+        app: slave3
         version: v1
     spec:
       containers:
-      - name: slave
+      - name: slave3
         image: docker.io/mizmorr/server:v5
         imagePullPolicy: Always
         ports:
