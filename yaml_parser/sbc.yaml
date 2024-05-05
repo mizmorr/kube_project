@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"cluster-fifth","service":"cluster-fifth"},"name":"cluser-fifth","namespace":"default"},"spec":{"ports":[{"name":"http","port":9080}],"selector":{"app":"cluster-fifth"}}}
+  creationTimestamp: "2024-05-05T20:03:30Z"
+  labels:
+    app: cluster-fifth
+    service: cluster-fifth
+  name: cluser-fifth
+  namespace: default
+  resourceVersion: "1848380"
+  uid: 9fb9d2b1-d888-4b93-92ba-9f9781dddaf0
+spec:
+  clusterIP: 10.104.150.23
+  clusterIPs:
+  - 10.104.150.23
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 9080
+    protocol: TCP
+    targetPort: 9080
+  selector:
+    app: cluster-fifth
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

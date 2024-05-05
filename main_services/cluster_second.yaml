@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluser-second
+  labels:
+    app: cluster-second
+    service: cluster-second
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: cluster-second
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-cluster-second
+  labels:
+    account: cluster-second
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k-core-third
+  labels:
+    app: cluster-second
+    version: three-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cluster-second
+      version: three-core
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9080"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: cluster-second
+        version: three-core
+    spec:
+      containers:
+      - name: server
+        image: docker.io/mizmorr/server:v5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9080
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k-core-fourth
+  labels:
+    app: cluster-second
+    version: four-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cluster-second
+      version: four-core
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9080"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: cluster-second
+        version: four-core
+    spec:
+      containers:
+      - name: server
+        image: docker.io/mizmorr/server:v5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9080
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+---

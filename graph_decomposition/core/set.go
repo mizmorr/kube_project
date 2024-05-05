@@ -46,8 +46,19 @@ func check_edges(g *Undirected_Graph, git_label map[int64]int64) map[int64]int64
 	maxes := maps.Get_max_of_max(rating, 3)
 	return maxes
 }
-func get_maxes(m map[int64]int64) {
-
+func get_maxes(mp map[int64]int64) {
+	// var filename string = "./git_sets/git_cohesion.txt"
+	// m := make(map[int64]int64)
+	// names := make(chan string)
+	// readerr := make(chan error)
+	// go GetLine(filename, names, readerr)
+	// for name := range names {
+	// 	str_slice := strings.Split(name, ",")
+	// 	key, _ := strconv.ParseInt(str_slice[0], 10, 64)
+	// 	val, _ := strconv.ParseInt(str_slice[1], 10, 64)
+	// 	m[key] = val
+	// }
+	// return m
 }
 
 func make_git_label() {
@@ -87,7 +98,9 @@ func Get_cohesion() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	var key, value int64 = 1, -1
 	defer file.Close()
+	new_map := []map[int64]int64{}
 	for index := 1; index < len(f); index++ {
 		filename := root_name + "set_" + fmt.Sprint(index) + ".txt"
 		names := make(chan string)
@@ -104,7 +117,45 @@ func Get_cohesion() {
 		}
 		new_graph := make_graph(git, nodes)
 		maxes := check_edges(new_graph, git_label)
-		file.WriteString(fmt.Sprintf("set %d - %#v\n", index, maxes))
+		delete(maxes, int64(index))
+		if value < maxes[34] {
+			value = maxes[34]
+			key = int64(index)
+		}
+		new_map = append(new_map, maxes)
+		file.WriteString(fmt.Sprintf("set %d, - %v\n", index, maxes))
 	}
+
+	for index, m := range new_map {
+		if int64(index) != key-1 {
+			delete(m, 34)
+		}
+		new_map[index] = maps.Get_max_of_max(m, 1)
+	}
+	process_map := make(map[int64][]int64, 0)
+	result_map := make(map[int64][]int64, 0)
+	for i, m := range new_map {
+		for k := range m {
+			var pool int64
+			if i == 32 {
+				delete(m, 33)
+			}
+			for i, j := range process_map {
+				if ok := maps.Interpolation_search(j, 0, int64(len(j)-1), k); ok != -1 {
+					pool = i
+					break
+				}
+
+			}
+			if pool == 0 {
+				process_map[int64(len(process_map))] = append(process_map[int64(len(process_map))], k)
+				result_map[int64(len(result_map))] = append(result_map[int64(len(result_map))], int64(i+1))
+			} else {
+				process_map[pool] = append(process_map[pool], k)
+				result_map[pool] = append(result_map[pool], int64(i+1))
+			}
+		}
+	}
+	fmt.Println(result_map)
 
 }

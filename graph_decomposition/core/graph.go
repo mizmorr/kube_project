@@ -199,7 +199,7 @@ func (g *Undirected_Graph) remove_node(id int64) {
 	for _, from := range g.nodes[id].adj_list {
 		if g.nodes[from] != nil {
 			adj := maps.Values2(g.nodes[from].adj_list)
-			id_adj := interpolation_search(adj, 0, int64(len(adj)-1), id)
+			id_adj := maps.Interpolation_search(adj, 0, int64(len(adj)-1), id)
 			delete(g.nodes[from].adj_list, id_adj)
 		}
 	}
@@ -226,31 +226,6 @@ func (g *Undirected_Graph) print() {
 		fmt.Printf("id - %v, adj - %v, edge num - %v\n", node.ID, node.adj_list, node.edge_number)
 		time.Sleep(10000)
 	}
-}
-
-func interpolation_search(arr []int64, low, high, search int64) int64 {
-
-	if low <= high && search >= arr[low] && search <= arr[high] {
-
-		if arr[high]-arr[low] == 0 {
-			switch {
-			case arr[len(arr)-1] == search:
-				return int64(len(arr) - 1)
-			default:
-				return -1
-			}
-		}
-		pos := low + (((high - low) / (arr[high] - arr[low])) * (search - arr[low]))
-		switch {
-		case arr[pos] == search:
-			return pos
-		case arr[pos] < search:
-			return interpolation_search(arr, pos+1, high, search)
-		case arr[pos] > search:
-			return interpolation_search(arr, low, pos-1, search)
-		}
-	}
-	return -1
 }
 
 func GetLine(filename string, names chan string, readerr chan error) {

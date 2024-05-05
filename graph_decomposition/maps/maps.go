@@ -86,3 +86,28 @@ func get_map_maxes(m map[int64]int64, index, current int, maxes map[int64]int64)
 func Get_max_of_max(m map[int64]int64, number_of_maxes int) map[int64]int64 {
 	return get_map_maxes(m, number_of_maxes, 0, map[int64]int64{})
 }
+
+func Interpolation_search(arr []int64, low, high, search int64) int64 {
+
+	if low <= high && search >= arr[low] && search <= arr[high] {
+
+		if arr[high]-arr[low] == 0 {
+			switch {
+			case arr[len(arr)-1] == search:
+				return int64(len(arr) - 1)
+			default:
+				return -1
+			}
+		}
+		pos := low + (((high - low) / (arr[high] - arr[low])) * (search - arr[low]))
+		switch {
+		case arr[pos] == search:
+			return pos
+		case arr[pos] < search:
+			return Interpolation_search(arr, pos+1, high, search)
+		case arr[pos] > search:
+			return Interpolation_search(arr, low, pos-1, search)
+		}
+	}
+	return -1
+}

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: app_default
+        version: version_default
+    name: deploy_name
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: app_default
+            version: version_default
+    template:
+        metadata:
+            labels:
+                app: app_default
+                version: version_default
+        spec:
+            containers:
+                - image: docker.io/mizmorr/server:v5
+                  imagePullPolicy: Always
+                  name: server
+                  ports:
+                    - containerPort: 9080
