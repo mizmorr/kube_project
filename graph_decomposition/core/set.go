@@ -87,13 +87,19 @@ func get_label_from_txt() map[int64]int64 {
 	}
 	return m
 }
-func Get_cohesion() {
+func Get_cohesion() map[int64][]int64 {
 
 	git := Get_git()
 	root_name := "./git_sets/"
 	f, _ := os.ReadDir(root_name)
 	git_label := get_label_from_txt()
 	result_path := root_name + "git_cohesion.txt"
+	if _, err := os.Stat(result_path); err == nil {
+		err := os.Remove(result_path)
+		if err != nil {
+			panic(err)
+		}
+	}
 	file, err := os.OpenFile(result_path, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -156,6 +162,7 @@ func Get_cohesion() {
 			}
 		}
 	}
-	fmt.Println(result_map)
+	// fmt.Println(result_map)
+	return result_map
 
 }
