@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-fourth
+  labels:
+    app: cluster-fourth
+    service: cluster-fourth
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: cluster-fourth
+---

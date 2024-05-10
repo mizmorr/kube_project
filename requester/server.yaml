@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  labels:
+    app: server
+    service: server
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: server
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: listen-server
+  labels:
+    account: server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-v1
+  labels:
+    app: server
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: server
+        version: v1
+    spec:
+      serviceAccountName: listen-server
+      containers:
+      - name: server
+        image: docker.io/mizmorr/server:request
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9080
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+---

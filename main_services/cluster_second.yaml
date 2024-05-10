@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cluser-second
+  name: cluster-second
   labels:
     app: cluster-second
     service: cluster-second
@@ -22,7 +22,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k-core-third
+  name: 3-core
   labels:
     app: cluster-second
     version: three-core
@@ -58,16 +58,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k-core-fourth
+  name: 6-core
   labels:
     app: cluster-second
-    version: four-core
+    version: six-core
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: cluster-second
-      version: four-core
+      version: six-core
   template:
     metadata:
       annotations:
@@ -76,7 +76,7 @@ spec:
         prometheus.io/path: "/metrics"
       labels:
         app: cluster-second
-        version: four-core
+        version: six-core
     spec:
       containers:
       - name: server

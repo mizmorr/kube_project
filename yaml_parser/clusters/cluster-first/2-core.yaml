@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: cluster-first
+        version: 2-core
+    name: 2-core
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: cluster-first
+            version: 2-core
+    template:
+        metadata:
+            labels:
+                app: cluster-first
+                version: 2-core
+        spec:
+            containers:
+                - image: docker.io/mizmorr/server:v5
+                  imagePullPolicy: Always
+                  name: server
+                  ports:
+                    - containerPort: 9080

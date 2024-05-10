@@ -89,17 +89,22 @@ func get_label_from_txt() map[int64]int64 {
 }
 func Get_cohesion() map[int64][]int64 {
 
-	git := Get_git()
 	root_name := "./git_sets/"
 	f, _ := os.ReadDir(root_name)
-	git_label := get_label_from_txt()
 	result_path := root_name + "git_cohesion.txt"
 	if _, err := os.Stat(result_path); err == nil {
-		err := os.Remove(result_path)
+		dir, _ := os.Getwd()
+		// fmt.Println("exists", dir+"/git_sets/git_cohesion.txt")
+		err := os.Remove(dir + "/git_sets/git_cohesion.txt")
+
 		if err != nil {
 			panic(err)
 		}
 	}
+	git := Get_git()
+
+	git_label := get_label_from_txt()
+
 	file, err := os.OpenFile(result_path, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -165,4 +170,24 @@ func Get_cohesion() map[int64][]int64 {
 	// fmt.Println(result_map)
 	return result_map
 
+}
+
+func Make_markup() {
+	names := map[int64]string{0: "zero", 1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth", 9: "nineth"}
+	new_map := make(map[int64]string, 0)
+	m := Get_cohesion()
+	for k, v := range m {
+		for _, elem := range v {
+			new_map[elem] = names[k]
+		}
+	}
+	f, err := os.Create("markup.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	// fmt.Println(new_map)
+	for k, v := range new_map {
+		f.WriteString(fmt.Sprintf("%v:%s\n", k, v))
+	}
 }

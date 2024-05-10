@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cluster-sixth
+  labels:
+    app: cluster-sixth
+    service: cluster-sixth
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: cluster-sixth
+---

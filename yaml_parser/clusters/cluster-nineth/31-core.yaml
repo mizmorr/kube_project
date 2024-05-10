@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: cluster-nineth
+        version: 31-core
+    name: 31-core
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: cluster-nineth
+            version: 31-core
+    template:
+        metadata:
+            labels:
+                app: cluster-nineth
+                version: 31-core
+        spec:
+            containers:
+                - image: docker.io/mizmorr/server:v5
+                  imagePullPolicy: Always
+                  name: server
+                  ports:
+                    - containerPort: 9080

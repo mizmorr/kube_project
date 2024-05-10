@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: cluster-seventh
+        version: 25-core
+    name: 25-core
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: cluster-seventh
+            version: 25-core
+    template:
+        metadata:
+            labels:
+                app: cluster-seventh
+                version: 25-core
+        spec:
+            containers:
+                - image: docker.io/mizmorr/server:v5
+                  imagePullPolicy: Always
+                  name: server
+                  ports:
+                    - containerPort: 9080
