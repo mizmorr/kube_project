@@ -2,12 +2,9 @@ package core
 
 import (
 	"bufio"
-	"decomposition/analysis"
 	"decomposition/maps"
-	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -133,67 +130,6 @@ func (g *Undirected_Graph) k_core_label() *Core_set {
 	return &core_set
 }
 
-func Samples(num, opt int) (string, string) {
-	g := NewUndirectedGraph()
-	paths := []string{"samples/graph1.txt", "samples/last_fm.txt", "samples/git.txt"}
-	separator := []string{" ", ",", ","}
-	filename := flag.String("filename", paths[num], "The file to parse")
-	flag.Parse()
-	var result []int64
-	if *filename == "" {
-		log.Fatal("Provide a file to parse")
-	}
-
-	names := make(chan string)
-	readerr := make(chan error)
-	go GetLine(*filename, names, readerr)
-
-	for name := range names {
-		k := strings.Split(name, separator[num])
-		for _, num := range k {
-			postj, err := strconv.Atoi(num)
-			if err != nil {
-				panic(err)
-			}
-			result = append(result, int64(postj))
-		}
-
-	}
-	if err := <-readerr; err != nil {
-		log.Fatal(err)
-	}
-	adjes := map[int64]map[int64]int64{}
-	for _, node := range result {
-		if _, value := adjes[node]; !value {
-			adjes[node] = make(map[int64]int64, 0)
-		}
-	}
-	for i := int64(0); i < int64(len(result)-1); i += 2 {
-		adjes[result[i]][int64(len(adjes[result[i]]))] = result[i+1]
-		adjes[result[i+1]][int64(len(adjes[result[i+1]]))] = result[i]
-	}
-	for i := int64(0); i < int64(len(adjes)); i++ {
-		g.append_node(adjes[i])
-	}
-	for _, node := range g.nodes {
-		node.edge_number = int64(len(node.adj_list))
-	}
-	t := time.Now()
-	set := g.k_core_label()
-	res_time := fmt.Sprint(time.Since(t).Seconds())
-	switch opt {
-	case 1:
-		return res_time, fmt.Sprint(set.get_max())
-	case 0:
-		res := ""
-		for k, v := range set.numbers {
-			res += fmt.Sprint(k) + ":" + fmt.Sprint(v) + "\n"
-		}
-		return res_time, res
-	}
-	return "", ""
-
-}
 func (g *Undirected_Graph) remove_node(id int64) {
 
 	for _, from := range g.nodes[id].adj_list {
@@ -239,59 +175,10 @@ func GetLine(filename string, names chan string, readerr chan error) {
 	for scanner.Scan() {
 		names <- scanner.Text()
 	}
-	close(names) // close causes range on channel to break out of loop
+	close(names)
 	readerr <- scanner.Err()
 }
-func Random_test(nodes_num int64, prob float64, opt int) (string, string, map[int64]int64, int64) {
-	g := random_graph(nodes_num, prob)
-	t := time.Now()
-	set := g.k_core_label()
-	analysis.Research(set.numbers, set.value)
 
-	res_time := fmt.Sprint(time.Since(t).Seconds())
-	result := ""
-	switch opt {
-	case 1:
-		return res_time, fmt.Sprint(set.get_max()), set.numbers, set.value
-	case 0:
-		// for k, v := range set.numbers {
-		// 	result += fmt.Sprint(k) + ":" + fmt.Sprint(v) + "\n"
-		// }
-		return res_time, result, set.numbers, set.value
-	}
-	return "", "", map[int64]int64{}, int64(0)
-}
-func random_graph(nodes_num int64, prob float64) *Undirected_Graph {
-	g := NewUndirectedGraph()
-	for i := int64(0); i < nodes_num; i++ {
-		g.append_node(map[int64]int64{})
-	}
-	// var wg sync.WaitGroup
-	// wg.Add(2)
-	// go func(wg *sync.WaitGroup) {
-	// 	defer wg.Done()
-
-	// }(&wg)
-	// go func(wg *sync.WaitGroup) {
-	// 	defer wg.Done()
-	// 	for i := nodes_num / 2; i < nodes_num-1; i++ {
-	// 		for j := i + 1; j < nodes_num; j++ {
-	// 			if rand.Float64() < prob {
-	// 				g.add_Edge(i, j)
-	// 			}
-	// 		}
-	// 	}
-	// }(&wg)
-	// wg.Wait()
-	for i := int64(0); i < nodes_num/2; i++ {
-		for j := i + 1; j < nodes_num; j++ {
-			if rand.Float64() < prob {
-				g.add_Edge(i, j)
-			}
-		}
-	}
-	return g
-}
 func search_map(m map[int64]int64, search int64) bool {
 	is_searched := false
 	var wg sync.WaitGroup
@@ -315,10 +202,6 @@ func search_map(m map[int64]int64, search int64) bool {
 	wg.Wait()
 	return is_searched
 
-}
-func TestRand() {
-	g := random_graph(10, 0.4)
-	g.print()
 }
 
 func Get_git() *Undirected_Graph {
@@ -359,6 +242,7 @@ func Get_git() *Undirected_Graph {
 	for _, node := range g.nodes {
 		node.edge_number = int64(len(node.adj_list))
 	}
+	g.print()
 	return g
 }
 func Make_k_decomp(g *Undirected_Graph) *Core_set {

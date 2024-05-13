@@ -23,6 +23,7 @@ func Make_sort() {
 		f.WriteString(fmt.Sprintf("%d\n", key))
 	}
 }
+
 func make_graph(g *Undirected_Graph, nodes []int64) *Undirected_Graph {
 	k := NewUndirectedGraph()
 	for _, n := range nodes {

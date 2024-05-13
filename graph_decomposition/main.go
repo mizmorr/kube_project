@@ -2,8 +2,12 @@ package main
 
 import (
 	"decomposition/core"
+	"fmt"
+	"time"
 )
 
 func main() {
-	core.Make_markup()
+	t := time.Now()
+	core.Get_git()
+	fmt.Println(time.Since(t).Seconds())
 }
