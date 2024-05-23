@@ -27,7 +27,7 @@ func make_request(name string, client *http.Client, w http.ResponseWriter) {
 
 func main() {
 
-	names := map[int64]string{0: "zero", 1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth", 7: "seventh", 8: "eighth", 9: "nineth"}
+	names := map[int64]string{2: "second", 4: "fourth", 7: "seventh"}
 
 	var wg sync.WaitGroup
 	http.HandleFunc("/hi_every_one/", func(w http.ResponseWriter, r *http.Request) {
