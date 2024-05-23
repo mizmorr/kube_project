@@ -83,7 +83,7 @@ func main() {
 	response, my_num := make_response()
 	post_resp := do_post(my_num, "get_slaves")
 	is_slaves_exist := post_resp == ""
-	cluster_num := strings.TrimSpace(do_post(my_num, "get_services"))
+	cluster_num := strings.TrimSpace(do_post(my_num, "get_service"))
 	http.HandleFunc("/hi", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "go hit mates\n")
 		log.Print(r.Method, ", from ", r.URL.Path, "\n")
