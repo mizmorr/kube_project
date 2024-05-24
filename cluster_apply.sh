@@ -1,1 +1,1 @@
- 1262  history | grep "1258 for d" > cluster_apply.sh
+for i in yaml_parser/clusters/*; do kubectl apply -f $(echo $i); done
