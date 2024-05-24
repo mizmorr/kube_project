@@ -12,6 +12,14 @@ import (
 	"strings"
 )
 
+type Json struct {
+	Cluster string   `json:"cluster"`
+	Slaves  []string `json:"slaves"`
+}
+type Req_body struct {
+	Name string `json:"name"`
+}
+
 func make_response() (string, string) {
 	read, err := os.ReadFile("/etc/hosts")
 
@@ -23,14 +31,20 @@ func make_response() (string, string) {
 	whoami := str[len(str)-1] + "! My IP is - " + str[len(str)-2]
 	return fmt.Sprintf("Hello from %s.\n", whoami), num
 }
-func do_post(num, resource string) string {
-	port := os.Getenv("REFERENCER_SERVICE_PORT")
-	host := os.Getenv("REFERENCER_SERVICE_HOST")
-	uri := "http://" + host + ":" + port + "/" + resource
-	type Req_body struct {
-		Name string `json:"name"`
+
+func unpack_response(resp *http.Response) (string, []string) {
+	decoder := json.NewDecoder(resp.Body)
+	var target Json
+	err := decoder.Decode(&target)
+	if err != nil {
+		log.Fatal(err.Error())
+		panic(err)
 	}
-	req_body := Req_body{Name: num}
+	return target.Cluster, target.Slaves
+}
+
+func post_req_maker(uri string, req_str interface{}) *http.Request {
+	req_body := req_str
 	marshalled, err := json.Marshal(req_body)
 	if err != nil {
 		log.Fatalf("impossible to marshall: %s", err)
@@ -40,6 +54,15 @@ func do_post(num, resource string) string {
 		log.Fatalf("impossible to build request: %s", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	return req
+}
+
+func do_post(num, resource string) (string, []string) {
+	port := os.Getenv("REFERENCER_SERVICE_PORT")
+	host := os.Getenv("REFERENCER_SERVICE_HOST")
+	uri := "http://" + host + ":" + port + "/" + resource
+	req_body := Req_body{Name: num}
+	req := post_req_maker(uri, req_body)
 	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
@@ -49,12 +72,8 @@ func do_post(num, resource string) string {
 
 	defer res.Body.Close()
 
-	resBody, err := io.ReadAll(res.Body)
-	if err != nil {
-		log.Fatalf("impossible to read all body of response: %s", err)
-	}
-	log.Printf("res body: %s", string(resBody))
-	return string(resBody)
+	return unpack_response(res)
+
 }
 
 func slave_request(slaves []string, w http.ResponseWriter) {
@@ -81,9 +100,9 @@ func slave_request(slaves []string, w http.ResponseWriter) {
 
 func main() {
 	response, my_num := make_response()
-	post_resp := do_post(my_num, "get_slaves")
-	is_slaves_exist := post_resp == ""
-	cluster_num := strings.TrimSpace(do_post(my_num, "get_service"))
+	cluster_num, slaves := do_post(my_num, "get_info")
+	log.Printf("I am %s\n My slaves are %vslaves\n", cluster_num, slaves)
+
 	http.HandleFunc("/hi", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "go hit mates\n")
 		log.Print(r.Method, ", from ", r.URL.Path, "\n")
@@ -107,8 +126,7 @@ func main() {
 			log.Printf("status Code: %d", res.StatusCode)
 			fmt.Fprint(w, "we've hit him - "+string(resBody))
 		}
-		if is_slaves_exist {
-			slaves := strings.Split(strings.TrimSpace(post_resp), " ")
+		if slaves != nil {
 			slave_request(slaves, w)
 		}
 	})
