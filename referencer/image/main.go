@@ -21,6 +21,11 @@ type Req_body struct {
 	Name string `json:"name"`
 }
 
+type Json struct {
+	Cluster string   `json:"cluster"`
+	Slaves  []string `json:"slaves"`
+}
+
 func get_slaves(name string) (res []string, err error) {
 	json_file, err := os.Open("slaves.json")
 	if err != nil {
@@ -36,7 +41,7 @@ func get_slaves(name string) (res []string, err error) {
 		for k := range m_ap {
 			res = append(res, k)
 		}
-		return
+		return res, nil
 	} else {
 		return nil, fmt.Errorf("no slaves found")
 	}
@@ -55,7 +60,7 @@ func make_map() map[string]string {
 	}
 	return res
 }
-func slaves_req_handler(r *http.Request, res http.ResponseWriter, ref map[string]string) {
+func req_handler(r *http.Request, ref map[string]string) ([]string, string) {
 	decoder := json.NewDecoder(r.Body)
 	var req Req_body
 	err := decoder.Decode(&req)
@@ -67,31 +72,26 @@ func slaves_req_handler(r *http.Request, res http.ResponseWriter, ref map[string
 	cluster_num := ref[name]
 	slaves, err := get_slaves(cluster_num)
 	if err != nil {
-		log.Fatal(err.Error())
-		fmt.Fprint(res, "")
-	} else {
-		logRequest(r)
-		fmt.Fprint(res, slaves)
+		log.Println(err.Error())
 	}
+	return slaves, cluster_num
 
 }
 func main() {
 	reference_map := make_map()
-	http.HandleFunc("/get_service", func(w http.ResponseWriter, r *http.Request) {
-		decoder := json.NewDecoder(r.Body)
-		var req Req_body
-		err := decoder.Decode(&req)
-		if err != nil {
-			panic(err)
-		}
-		name := req.Name
-		cluster_num := reference_map[name]
-		fmt.Fprintln(w, cluster_num)
-		logRequest(r)
-	})
 
-	http.HandleFunc("/get_slaves", func(w http.ResponseWriter, r *http.Request) {
-		slaves_req_handler(r, w, reference_map)
+	http.HandleFunc("/get_info", func(w http.ResponseWriter, r *http.Request) {
+		logRequest(r)
+		w.WriteHeader(http.StatusCreated)
+		w.Header().Set("Content-Type", "application/json")
+		slaves, cluster_name := req_handler(r, reference_map)
+		json_response := Json{Cluster: cluster_name, Slaves: slaves}
+		jsonResp, err := json.Marshal(json_response)
+		if err != nil {
+			log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+		}
+		w.Write(jsonResp)
+
 	})
 
 	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
