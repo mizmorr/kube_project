@@ -26,7 +26,7 @@ type Json struct {
 	Slaves  []string `json:"slaves"`
 }
 
-func get_slaves(name string) (res []string, err error) {
+func get_slaves(name string) ([]string, error) {
 	json_file, err := os.Open("slaves.json")
 	if err != nil {
 		return nil, err
@@ -38,6 +38,7 @@ func get_slaves(name string) (res []string, err error) {
 	result := k[name]
 	if result != nil {
 		m_ap := result.(map[string]interface{})
+		res := make([]string, 0)
 		for k := range m_ap {
 			res = append(res, k)
 		}

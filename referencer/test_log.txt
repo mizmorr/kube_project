@@ -1,0 +1,6 @@
+curl -d '{"name":"10"}' -H "Content-Type: application/json" -X POST http://localhost:9080/get_info                                                    │
+{"cluster":"second","slaves":["zero","first","third","ninth"]}
+curl -d '{"name":"1"}' -H "Content-Type: application/json" -X POST http://localhost:9080/get_info                                                     │
+{"cluster":"zero","slaves":null}
+curl -d '{"name":"9"}' -H "Content-Type: application/json" -X POST http://localhost:9080/get_info                                                     │
+{"cluster":"second","slaves":["ninth","zero","first","third"]}
