@@ -101,7 +101,7 @@ func slave_request(slaves []string, w http.ResponseWriter) {
 func main() {
 	response, my_num := make_response()
 	cluster_num, slaves := do_post(my_num, "get_info")
-	log.Printf("I am %s\n My slaves are %vslaves\n", cluster_num, slaves)
+	log.Printf("I am %s, my slaves are: %v\n", cluster_num, slaves)
 
 	http.HandleFunc("/hi", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "go hit mates\n")
