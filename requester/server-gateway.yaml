@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: listen-gateway
+  name: kube-gateway
 spec:
   # The selector matches the ingress gateway pod labels.
   # If you installed Istio using Helm following the standard documentation, this would be "istio=ingress"
@@ -23,17 +23,11 @@ spec:
   hosts:
   - "*"
   gateways:
-  - listen-gateway
+  - kube-gateway
   http:
   - match:
     - uri:
-        exact: /index
-    - uri:
-        exact: /about
-    - uri:
-        exact: /hi_to_slave/
-    - uri:
-        exact: /hi_every1
+        exact: /hi_every_one/
     route:
     - destination:
         host: server
